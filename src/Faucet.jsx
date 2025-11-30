@@ -104,7 +104,7 @@ export default function Faucet() {
               <span className="dot" /> You will receive exactly <b>1 $LADY</b>.
             </div>
             <div className="info-item">
-              <span className="dot" /> One request per address every 24 hours.
+              <span className="dot" /> One request per address.
             </div>
           </div>
 
