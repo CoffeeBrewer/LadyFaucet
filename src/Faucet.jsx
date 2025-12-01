@@ -95,7 +95,7 @@ export default function Faucet() {
                 Sending…
               </>
             ) : (
-              "Request 1 $LADY"
+              "Request 0.1 $LADY"
             )}
           </button>
 
