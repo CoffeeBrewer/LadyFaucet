@@ -101,7 +101,7 @@ export default function Faucet() {
 
           <div className="info">
             <div className="info-item">
-              <span className="dot" /> You will receive exactly <b>1 $LADY</b>.
+              <span className="dot" /> You will receive exactly <b>0.1 $LADY</b>.
             </div>
             <div className="info-item">
               <span className="dot" /> One request per address.
@@ -130,7 +130,7 @@ export default function Faucet() {
         </section>
 
         <footer className="footer">
-          Powered by LadyChain • Faucet sends 1 $LADY per request
+          Powered by Beans • LadyChain • Faucet sends 0.1 $LADY per request
         </footer>
       </main>
     </div>
