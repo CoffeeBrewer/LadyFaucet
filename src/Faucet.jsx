@@ -58,7 +58,7 @@ export default function Faucet() {
           <div className="badge">Faucet</div>
           <h1>LadyChain Faucet</h1>
           <p className="sub">
-            Enter your EVM address and receive <b>1 $LADY</b>.  
+            Enter your EVM address and receive <b>0.1 $LADY</b>.  
             Enough for gas fees for life.
           </p>
         </header>
