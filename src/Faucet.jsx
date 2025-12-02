@@ -1,9 +1,19 @@
 import { useMemo, useState } from "react";
+import { ethers } from "ethers";
 import "./faucet.css";
+
+const FAUCET_ADDRESS = "0xD0e6e232e2D17fEC473C171663368d47e0aC77f8";
+const CHAIN_ID = 589;
+
+// Minimal ABI voor claim
+const FAUCET_ABI = [
+  "function claim(bytes32 nonce, bytes sig) external"
+];
 
 export default function Faucet() {
   const [address, setAddress] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [status, setStatus] = useState("idle"); 
+  // idle | loading | success | error
   const [message, setMessage] = useState("");
   const [txHash, setTxHash] = useState("");
 
@@ -24,27 +34,53 @@ export default function Faucet() {
       setMessage("");
       setTxHash("");
 
-      let data = null;
-      try {
-        const res = await fetch("/.netlify/functions/faucet", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ address })
-        });
-        if (res.ok) data = await res.json();
-      } catch (_) {}
+      // 1) Call Netlify function → nonce + sig
+      const res = await fetch("/.netlify/functions/faucet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address })
+      });
 
-      if (!data?.ok) {
-        await new Promise(r => setTimeout(r, 900));
-        data = { ok: true, txHash: "0x7a9f...c21b" };
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data?.ok) {
+        setStatus("error");
+        setMessage(data?.error || "Claim denied.");
+        return;
       }
 
-      setTxHash(data.txHash);
+      const { nonce, sig } = data;
+
+      // 2) On-chain claim via wallet
+      if (!window.ethereum) {
+        setStatus("error");
+        setMessage("No wallet found. Install MetaMask.");
+        return;
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const network = await provider.getNetwork();
+
+      if (Number(network.chainId) !== CHAIN_ID) {
+        setStatus("error");
+        setMessage(`Please switch to LadyChain (chainId ${CHAIN_ID}).`);
+        return;
+      }
+
+      const signer = await provider.getSigner();
+      const faucet = new ethers.Contract(FAUCET_ADDRESS, FAUCET_ABI, signer);
+
+      const tx = await faucet.claim(nonce, sig);
+      setTxHash(tx.hash);
+
+      await tx.wait();
+
       setStatus("success");
-      setMessage("1 $LADY has been sent to your address!");
+      setMessage("0.1 $LADY has been sent to your address!");
     } catch (e) {
+      console.error(e);
       setStatus("error");
-      setMessage("Something went wrong. Please try again later.");
+      setMessage(e?.shortMessage || e?.message || "Something went wrong.");
     }
   }
 
@@ -58,13 +94,14 @@ export default function Faucet() {
           <div className="badge">Faucet</div>
           <h1>LadyChain Faucet</h1>
           <p className="sub">
-            Enter your EVM address and receive <b>0.1 $LADY</b>.  
-            Enough for gas fees for life.
+            Enter your EVM address and receive <b>0.1 LADY</b> (native).  
+            Enough for gas fees to get started.
           </p>
         </header>
 
         <section className="card">
           <label className="label" htmlFor="addr">Your EVM Address</label>
+
           <div className="input-row">
             <input
               id="addr"
@@ -95,13 +132,13 @@ export default function Faucet() {
                 Sending…
               </>
             ) : (
-              "Request 0.1 $LADY"
+              "Request 0.1 LADY"
             )}
           </button>
 
           <div className="info">
             <div className="info-item">
-              <span className="dot" /> You will receive exactly <b>0.1 $LADY</b>.
+              <span className="dot" /> You will receive exactly <b>0.1 LADY</b>.
             </div>
             <div className="info-item">
               <span className="dot" /> One request per address.
@@ -111,10 +148,15 @@ export default function Faucet() {
           {status === "success" && (
             <div className="alert success">
               <b>Success!</b> {message}
+
               {txHash && (
                 <div className="tx">
                   Tx: <code>{txHash}</code>
-                  <a href={`https://explorer.ladychain.xyz/tx/${txHash}`} target="_blank" rel="noreferrer">
+                  <a
+                    href={`https://explorer.ladychain.xyz/tx/${txHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     View on Explorer →
                   </a>
                 </div>
@@ -130,7 +172,7 @@ export default function Faucet() {
         </section>
 
         <footer className="footer">
-          Powered by Beans • LadyChain • Faucet sends 0.1 $LADY per request
+          Powered by LadyChain • Faucet sends 0.1 LADY per request
         </footer>
       </main>
     </div>
