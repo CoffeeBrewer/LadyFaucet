@@ -115,7 +115,7 @@ export default function Faucet() {
                 <div className="tx">
                   Tx: <code>{txHash}</code>
                   <a
-                    href={`https://explorer.ladychain.xyz/tx/${txHash}`}
+                    href={`https://ladyscan.us/tx/${txHash}`}
                     target="_blank"
                     rel="noreferrer"
                   >
