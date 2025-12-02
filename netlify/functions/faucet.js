@@ -5,16 +5,14 @@ const redis = Redis.fromEnv();
 
 const RPC_URL = process.env.RPC_URL;
 const CHAIN_ID = Number(process.env.CHAIN_ID || "589");
-const FAUCET_ADDRESS = process.env.FAUCET_ADDRESS;
-const SIGNER_PK = process.env.SIGNER_PK;
+const FAUCET_PK = process.env.FAUCET_PK; // <-- NIEUW
+const DRIP_AMOUNT = ethers.parseEther("0.1"); // 0.1 LADY native
 
-// simpele helper
 function json(statusCode, body) {
   return {
     statusCode,
     headers: {
       "Content-Type": "application/json",
-      // basic CORS
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "Content-Type",
       "Access-Control-Allow-Methods": "POST, OPTIONS"
@@ -23,7 +21,7 @@ function json(statusCode, body) {
   };
 }
 
-export async function handler(event) {
+export async function handler(event, context) {
   if (event.httpMethod === "OPTIONS") {
     return json(200, { ok: true });
   }
@@ -33,10 +31,10 @@ export async function handler(event) {
   }
 
   try {
-    if (!RPC_URL || !FAUCET_ADDRESS || !SIGNER_PK) {
+    if (!RPC_URL || !FAUCET_PK) {
       return json(500, {
         ok: false,
-        error: "Missing env vars (RPC_URL / FAUCET_ADDRESS / SIGNER_PK)"
+        error: "Missing env vars (RPC_URL / FAUCET_PK)"
       });
     }
 
@@ -47,48 +45,54 @@ export async function handler(event) {
 
     const addr = address.toLowerCase();
 
-    // 1) 1x per wallet check in Upstash
+    // 1) 1x per wallet
     const claimKey = `claimed:${addr}`;
     const already = await redis.get(claimKey);
     if (already) {
       return json(429, { ok: false, error: "Already claimed" });
     }
 
-    // 2) check faucet balance (optioneel maar handig)
-    const provider = new ethers.JsonRpcProvider(RPC_URL);
-    const balance = await provider.getBalance(FAUCET_ADDRESS);
-    const drip = ethers.parseEther("0.1");
+    // 2) optionele simpele IP rate limit (anti-spam)
+    const ip =
+      event.headers["x-nf-client-connection-ip"] ||
+      event.headers["x-forwarded-for"] ||
+      "unknown";
+    const ipKey = `ip:${ip}`;
+    const ipCount = (await redis.get(ipKey)) || 0;
+    if (Number(ipCount) >= 5) {
+      return json(429, { ok: false, error: "Too many requests from this IP" });
+    }
 
-    if (balance < drip) {
+    const provider = new ethers.JsonRpcProvider(RPC_URL);
+    const net = await provider.getNetwork();
+    if (Number(net.chainId) !== CHAIN_ID) {
+      return json(500, { ok: false, error: "Wrong chain RPC" });
+    }
+
+    const faucetWallet = new ethers.Wallet(FAUCET_PK, provider);
+
+    // 3) check balance faucet wallet
+    const bal = await provider.getBalance(faucetWallet.address);
+    if (bal < DRIP_AMOUNT) {
       return json(400, { ok: false, error: "Faucet empty" });
     }
 
-    // 3) maak nonce + signature
-    const nonce = ethers.hexlify(ethers.randomBytes(32));
-    const wallet = new ethers.Wallet(SIGNER_PK);
-
-    const msgHash = ethers.keccak256(
-      ethers.solidityPacked(
-        ["address", "bytes32", "address", "uint256"],
-        [addr, nonce, FAUCET_ADDRESS, CHAIN_ID]
-      )
-    );
-
-    const sig = await wallet.signMessage(ethers.getBytes(msgHash));
-
-    // 4) markeer als geclaimd
-    await redis.set(claimKey, "1");
-
-    return json(200, {
-      ok: true,
-      nonce,
-      sig
+    // 4) send native LADY
+    const tx = await faucetWallet.sendTransaction({
+      to: addr,
+      value: DRIP_AMOUNT
     });
+
+    // 5) mark claimed + ip throttle
+    await redis.set(claimKey, "1");
+    await redis.set(ipKey, String(Number(ipCount) + 1), { ex: 60 * 60 }); // 1 uur
+
+    return json(200, { ok: true, txHash: tx.hash });
   } catch (e) {
-    console.error("faucet function error:", e);
+    console.error("faucet send error:", e);
     return json(500, {
       ok: false,
-      error: e?.message || "Server error"
+      error: e?.shortMessage || e?.message || "Server error"
     });
   }
 }
