@@ -6,39 +6,28 @@ const CHAIN_ID = Number(process.env.CHAIN_ID || "589");
 const FAUCET_PK = process.env.FAUCET_PK;
 const DRIP_AMOUNT = ethers.parseEther("0.1"); // 0.1 LADY native
 
-function json(statusCode, body) {
-  return {
-    statusCode,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Allow-Methods": "POST, OPTIONS"
-    },
-    body: JSON.stringify(body)
-  };
-}
+const CORS = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS"
+};
 
-export async function handler(event, context) {
-  if (event.httpMethod === "OPTIONS") {
-    return json(200, { ok: true });
-  }
+const reply = (status, body) =>
+  new Response(JSON.stringify(body), { status, headers: CORS });
 
-  if (event.httpMethod !== "POST") {
-    return json(405, { ok: false, error: "Method not allowed" });
-  }
+export default async (req) => {
+  if (req.method === "OPTIONS") return reply(200, { ok: true });
+  if (req.method !== "POST") return reply(405, { ok: false, error: "Method not allowed" });
 
   try {
     if (!RPC_URL || !FAUCET_PK) {
-      return json(500, {
-        ok: false,
-        error: "Missing env vars (RPC_URL / FAUCET_PK)"
-      });
+      return reply(500, { ok: false, error: "Missing env vars (RPC_URL / FAUCET_PK)" });
     }
 
-    const { address } = JSON.parse(event.body || "{}");
+    const { address } = await req.json().catch(() => ({}));
     if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
-      return json(400, { ok: false, error: "Invalid EVM address" });
+      return reply(400, { ok: false, error: "Invalid EVM address" });
     }
 
     const addr = address.toLowerCase();
@@ -47,13 +36,13 @@ export async function handler(event, context) {
 
     // 1) 1x per wallet
     if (await claims.get(`claimed:${addr}`)) {
-      return json(429, { ok: false, error: "Already claimed" });
+      return reply(429, { ok: false, error: "Already claimed" });
     }
 
     // 2) IP rate limit (5 per uur)
     const ip =
-      event.headers["x-nf-client-connection-ip"] ||
-      event.headers["x-forwarded-for"] ||
+      req.headers.get("x-nf-client-connection-ip") ||
+      req.headers.get("x-forwarded-for") ||
       "unknown";
     const ipKey = `ip:${ip}`;
     const now = Date.now();
@@ -65,13 +54,13 @@ export async function handler(event, context) {
         ? stored
         : { count: 0, expiresAt: now + oneHourMs };
     if (ipData.count >= 5) {
-      return json(429, { ok: false, error: "Too many requests from this IP" });
+      return reply(429, { ok: false, error: "Too many requests from this IP" });
     }
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const net = await provider.getNetwork();
     if (Number(net.chainId) !== CHAIN_ID) {
-      return json(500, { ok: false, error: "Wrong chain RPC" });
+      return reply(500, { ok: false, error: "Wrong chain RPC" });
     }
 
     const faucetWallet = new ethers.Wallet(FAUCET_PK, provider);
@@ -79,7 +68,7 @@ export async function handler(event, context) {
     // 3) check balance faucet wallet
     const bal = await provider.getBalance(faucetWallet.address);
     if (bal < DRIP_AMOUNT) {
-      return json(400, { ok: false, error: "Faucet empty" });
+      return reply(400, { ok: false, error: "Faucet empty" });
     }
 
     // 4) send native LADY
@@ -93,12 +82,12 @@ export async function handler(event, context) {
     ipData.count += 1;
     await ipLimits.setJSON(ipKey, ipData);
 
-    return json(200, { ok: true, txHash: tx.hash });
+    return reply(200, { ok: true, txHash: tx.hash });
   } catch (e) {
     console.error("faucet send error:", e);
-    return json(500, {
+    return reply(500, {
       ok: false,
       error: e?.shortMessage || e?.message || "Server error"
     });
   }
-}
+};
