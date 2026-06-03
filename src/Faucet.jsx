@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./faucet.css";
 
 export default function Faucet() {
@@ -6,6 +6,13 @@ export default function Faucet() {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [message, setMessage] = useState("");
   const [txHash, setTxHash] = useState("");
+  const [txCountdown, setTxCountdown] = useState(0);
+
+  useEffect(() => {
+    if (txCountdown <= 0) return;
+    const t = setTimeout(() => setTxCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [txCountdown]);
 
   const isValidEvm = useMemo(
     () => /^0x[a-fA-F0-9]{40}$/.test(address.trim()),
@@ -23,6 +30,7 @@ export default function Faucet() {
       setStatus("loading");
       setMessage("");
       setTxHash("");
+      setTxCountdown(0);
 
       const res = await fetch("/.netlify/functions/faucet", {
         method: "POST",
@@ -42,6 +50,7 @@ export default function Faucet() {
       setTxHash(data.txHash);
       setStatus("success");
       setMessage("0.1 LADY has been sent to your address!");
+      setTxCountdown(5);
     } catch (e) {
       setStatus("error");
       setMessage(e.message || "Something went wrong. Please try again later.");
@@ -114,13 +123,20 @@ export default function Faucet() {
               {txHash && (
                 <div className="tx">
                   Tx: <code>{txHash}</code>
-                  <a
-                    href={`https://ladyscan.us/tx/${txHash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View on Explorer →
-                  </a>
+                  {txCountdown > 0 ? (
+                    <span className="tx-pending">
+                      <span className="spinner" />
+                      Confirming on chain… ({txCountdown}s)
+                    </span>
+                  ) : (
+                    <a
+                      href={`https://ladyscan.us/tx/${txHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      View on Explorer →
+                    </a>
+                  )}
                 </div>
               )}
             </div>
