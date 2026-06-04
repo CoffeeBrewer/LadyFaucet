@@ -17,8 +17,7 @@ export default function FaucetGrid() {
             <div className="mini-ticker">{f.ticker}</div>
             <div className="mini-name">{f.name}</div>
             <div className="mini-meta">
-              <span className="mini-label">Drip</span>
-              <span className="mini-drip">{f.drip}</span>
+              <span className="mini-drip">Get {f.drip} tokens</span>
             </div>
             <div className="mini-link">Visit →</div>
           </a>
