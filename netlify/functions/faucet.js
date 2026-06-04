@@ -22,7 +22,7 @@ export default async (req) => {
 
   try {
     if (!RPC_URL || !FAUCET_PK) {
-      return reply(500, { ok: false, error: "Missing env vars (RPC_URL / FAUCET_PK)" });
+      return reply(500, { ok: false, error: "Server misconfigured" });
     }
 
     const { address } = await req.json().catch(() => ({}));
@@ -84,7 +84,7 @@ export default async (req) => {
 
     return reply(200, { ok: true, txHash: tx.hash });
   } catch (e) {
-    console.error("faucet send error:", e);
+    console.error("faucet send error:", e?.message || "unknown");
     return reply(500, {
       ok: false,
       error: e?.shortMessage || e?.message || "Server error"
