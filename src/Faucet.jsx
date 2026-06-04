@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import FaucetGrid from "./FaucetGrid";
 import "./faucet.css";
 
 export default function Faucet() {
@@ -149,8 +150,10 @@ export default function Faucet() {
           )}
         </section>
 
+        <FaucetGrid />
+
         <footer className="footer">
-          Powered by LadyChain • Faucet sends 0.1 LADY per request
+          Powered by LadyChain • chainId 589
         </footer>
       </main>
     </div>

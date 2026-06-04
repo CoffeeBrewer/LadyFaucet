@@ -1,0 +1,38 @@
+export const faucets = [
+  {
+    slug: "sloth",
+    ticker: "SLOTH",
+    name: "Sloth Syndicate",
+    drip: "1,000",
+    url: "https://sloth.ladyfaucet.online",
+    accent: "#ff4fa3",
+    accent2: "#ff8c2e",
+  },
+  {
+    slug: "wisdog",
+    ticker: "WISDOG",
+    name: "Dog of Wisdom",
+    drip: "87,150",
+    url: "https://wisdog.ladyfaucet.online",
+    accent: "#f4b942",
+    accent2: "#d97706",
+  },
+  {
+    slug: "bitcoin",
+    ticker: "BITCOIN",
+    name: "Magic Internet Money",
+    drip: "5",
+    url: "https://bitcoin.ladyfaucet.online",
+    accent: "#f7931a",
+    accent2: "#8b5cf6",
+  },
+  {
+    slug: "beans",
+    ticker: "BEANS",
+    name: "Coffeebeans",
+    drip: "1,000",
+    url: "https://beans.ladyfaucet.online",
+    accent: "#c89368",
+    accent2: "#8b5a2b",
+  },
+];
