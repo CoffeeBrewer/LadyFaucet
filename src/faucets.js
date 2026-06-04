@@ -35,4 +35,13 @@ export const faucets = [
     accent: "#c89368",
     accent2: "#8b5a2b",
   },
+  {
+    slug: "boo",
+    ticker: "BOO",
+    name: "BOO",
+    drip: "0.00001",
+    url: "https://boo.ladyfaucet.online",
+    accent: "#ff6b35",
+    accent2: "#6a0dad",
+  },
 ];
