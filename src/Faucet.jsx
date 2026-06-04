@@ -50,7 +50,7 @@ export default function Faucet() {
       setTxHash(data.txHash);
       setStatus("success");
       setMessage("0.1 LADY has been sent to your address!");
-      setTxCountdown(5);
+      setTxCountdown(10);
     } catch (e) {
       setStatus("error");
       setMessage(e.message || "Something went wrong. Please try again later.");
@@ -126,7 +126,7 @@ export default function Faucet() {
                   {txCountdown > 0 ? (
                     <span className="tx-pending">
                       <span className="spinner" />
-                      Confirming on chain… ({txCountdown}s)
+                      Sending LADY… ({txCountdown}s)
                     </span>
                   ) : (
                     <a
