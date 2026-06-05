@@ -44,4 +44,13 @@ export const faucets = [
     accent: "#ff6b35",
     accent2: "#6a0dad",
   },
+  {
+    slug: "bullishclick",
+    ticker: "BC",
+    name: "Bullish Click",
+    drip: "0.071",
+    url: "https://bullishclick.ladyfaucet.online",
+    accent: "#22c55e",
+    accent2: "#14532d",
+  },
 ];
