@@ -48,7 +48,7 @@ export const faucets = [
     slug: "bullishclick",
     ticker: "BC",
     name: "Bullish Click",
-    drip: "0.071",
+    drip: "0.71",
     url: "https://bullishclick.ladyfaucet.online",
     accent: "#22c55e",
     accent2: "#14532d",
