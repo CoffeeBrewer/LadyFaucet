@@ -53,4 +53,13 @@ export const faucets = [
     accent: "#22c55e",
     accent2: "#14532d",
   },
+  {
+    slug: "lmax",
+    ticker: "LMAX",
+    name: "Ladyus Maximus",
+    drip: "250",
+    url: "https://lmax.ladyfaucet.online",
+    accent: "#fbbf24",
+    accent2: "#5b21b6",
+  },
 ];
