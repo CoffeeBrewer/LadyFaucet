@@ -62,4 +62,13 @@ export const faucets = [
     accent: "#fbbf24",
     accent2: "#5b21b6",
   },
+  {
+    slug: "cafe",
+    ticker: "CAFE",
+    name: "CAFE DOLLARS",
+    drip: "10,000,000",
+    url: "https://cafe.ladyfaucet.online",
+    accent: "#ca8a04",
+    accent2: "#15803d",
+  },
 ];

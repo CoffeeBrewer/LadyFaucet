@@ -150,7 +150,7 @@ export default function Faucet() {
           )}
         </section>
 
-        <FaucetGrid />
+        <FaucetGrid address={address} />
 
         <footer className="footer">
           Powered by LadyChain • chainId 589

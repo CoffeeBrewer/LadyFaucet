@@ -30,6 +30,7 @@ DECIMALS=18
 
 SLUG="" TICKER="" NAME="" CA="" DRIP=""
 ACCENT="" ACCENT2="" REPO_NAME=""
+NO_HUB_PUSH=0
 
 # ─── Arg parsing ───────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -43,6 +44,7 @@ while [[ $# -gt 0 ]]; do
     --accent2)  ACCENT2="$2"; shift 2 ;;
     --decimals) DECIMALS="$2"; shift 2 ;;
     --repo)     REPO_NAME="$2"; shift 2 ;;
+    --no-hub-push) NO_HUB_PUSH=1; shift ;;
     -h|--help)  sed -n '2,21p' "$0"; exit 0 ;;
     *) echo "Unknown arg: $1" >&2; exit 1 ;;
   esac
@@ -74,8 +76,9 @@ command -v python3 >/dev/null || die "python3 required (manifest insert)"
 gh auth status >/dev/null 2>&1 || die "gh not authenticated. Run: gh auth login"
 
 # Hub must be clean — script will commit+push to it
-if [[ -n "$(cd "$HUB_DIR" && git status --porcelain)" ]]; then
-  die "LadyFaucet has uncommitted changes. Commit or stash before running this script."
+# (skipped when --no-hub-push: we'll only edit faucets.js locally without commit)
+if [[ $NO_HUB_PUSH -eq 0 ]] && [[ -n "$(cd "$HUB_DIR" && git status --porcelain)" ]]; then
+  die "LadyFaucet has uncommitted changes. Commit or stash before running this script (or pass --no-hub-push)."
 fi
 
 # Format drip with commas if numeric and >= 1000
@@ -196,9 +199,13 @@ with open(path, 'w') as f:
 PY
 
 cd "$HUB_DIR"
-git add src/faucets.js
-git commit -m "Add ${TICKER} to faucets hub" >/dev/null
-git push >/dev/null 2>&1
+if [[ $NO_HUB_PUSH -eq 1 ]]; then
+  echo "    --no-hub-push: manifest edited locally; commit+push skipped"
+else
+  git add src/faucets.js
+  git commit -m "Add ${TICKER} to faucets hub" >/dev/null
+  git push >/dev/null 2>&1
+fi
 
 # ─── 7. Done — print manual steps ──────────────────────────────────────
 echo "==> [7/7] Done"

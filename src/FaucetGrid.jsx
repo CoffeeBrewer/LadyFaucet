@@ -1,26 +1,27 @@
+import { useMemo } from "react";
 import { faucets } from "./faucets";
+import FaucetRow from "./FaucetRow";
 
-export default function FaucetGrid() {
+function shuffle(arr) {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+export default function FaucetGrid({ address }) {
+  const ordered = useMemo(() => shuffle(faucets), []);
   return (
     <section className="grid-section">
       <h2 className="grid-title">Project faucets on LadyChain</h2>
+      <p className="grid-sub">
+        Use the address field above and claim from any faucet in one click.
+      </p>
       <div className="grid">
-        {faucets.map((f) => (
-          <a
-            key={f.slug}
-            className="mini-card"
-            href={f.url}
-            target="_blank"
-            rel="noreferrer"
-            style={{ "--card-accent": f.accent, "--card-accent-2": f.accent2 }}
-          >
-            <div className="mini-ticker">{f.ticker}</div>
-            <div className="mini-name">{f.name}</div>
-            <div className="mini-meta">
-              <span className="mini-drip">Get {f.drip} tokens</span>
-            </div>
-            <div className="mini-link">Visit →</div>
-          </a>
+        {ordered.map((f) => (
+          <FaucetRow key={f.slug} faucet={f} address={address} />
         ))}
       </div>
     </section>
