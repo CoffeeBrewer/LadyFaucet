@@ -66,7 +66,7 @@ export const faucets = [
     slug: "cafe",
     ticker: "CAFE",
     name: "CAFE DOLLARS",
-    drip: "10,000,000",
+    drip: "50,000,000",
     url: "https://cafe.ladyfaucet.online",
     accent: "#ca8a04",
     accent2: "#15803d",
