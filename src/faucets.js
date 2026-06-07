@@ -71,13 +71,4 @@ export const faucets = [
     accent: "#ca8a04",
     accent2: "#15803d",
   },
-  {
-    slug: "l589",
-    ticker: "L589",
-    name: "Lady589",
-    drip: "100",
-    url: "https://l589.ladyfaucet.online",
-    accent: "#ec4899",
-    accent2: "#2563eb",
-  },
 ];
