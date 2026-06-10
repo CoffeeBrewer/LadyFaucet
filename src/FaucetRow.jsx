@@ -13,7 +13,8 @@ export default function FaucetRow({ faucet, address }) {
       setStatus("loading");
       setMessage("");
       setTxHash("");
-      const res = await fetch(`${faucet.url}/.netlify/functions/faucet`, {
+      const siteHost = faucet.site || `${faucet.slug}-faucet.netlify.app`;
+      const res = await fetch(`https://${siteHost}/.netlify/functions/faucet`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address: address.trim() })
