@@ -2,21 +2,25 @@
 #
 # create-faucet.sh — scaffold a new project faucet end-to-end.
 #
-# Steps 1-5 + 7 (everything except Namecheap CNAME, which is manual):
+# What it does:
 #   1. Clone SlothFaucet template → new local project dir
 #   2. Rebrand strings (ticker, name, contract, drip, theme)
 #   3. npm install + git init + GitHub repo + first push
 #   4. Netlify site + env:import + mark FAUCET_PK secret
-#   5. Append entry to LadyFaucet hub manifest + commit + push
+#   5. Append entry to LadyFaucet hub manifest LOCALLY (no commit/push)
 #
-# Manual step 6 (DNS + custom domain in Netlify) is printed at the end.
+# Hub manifest is left uncommitted by default — review then commit+push
+# when you want the new faucet card live. Pass --push-hub to opt in to
+# the old auto-commit+push behavior.
+#
+# Manual steps (DNS + custom domain in Netlify) are printed at the end.
 #
 # Usage:
 #   ./scripts/create-faucet.sh \
 #     --slug doge --ticker DOGE --name "Dogecoin" \
 #     --ca 0x... --drip 100 \
 #     --accent "#f4b942" --accent2 "#d97706" \
-#     [--decimals 18] [--repo dogefaucet]
+#     [--decimals 18] [--repo dogefaucet] [--push-hub]
 
 set -euo pipefail
 
@@ -30,7 +34,7 @@ DECIMALS=18
 
 SLUG="" TICKER="" NAME="" CA="" DRIP=""
 ACCENT="" ACCENT2="" REPO_NAME=""
-NO_HUB_PUSH=0
+PUSH_HUB=0
 
 # ─── Arg parsing ───────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
@@ -44,8 +48,8 @@ while [[ $# -gt 0 ]]; do
     --accent2)  ACCENT2="$2"; shift 2 ;;
     --decimals) DECIMALS="$2"; shift 2 ;;
     --repo)     REPO_NAME="$2"; shift 2 ;;
-    --no-hub-push) NO_HUB_PUSH=1; shift ;;
-    -h|--help)  sed -n '2,21p' "$0"; exit 0 ;;
+    --push-hub) PUSH_HUB=1; shift ;;
+    -h|--help)  sed -n '2,23p' "$0"; exit 0 ;;
     *) echo "Unknown arg: $1" >&2; exit 1 ;;
   esac
 done
@@ -75,10 +79,9 @@ command -v npx  >/dev/null || die "npx not available"
 command -v python3 >/dev/null || die "python3 required (manifest insert)"
 gh auth status >/dev/null 2>&1 || die "gh not authenticated. Run: gh auth login"
 
-# Hub must be clean — script will commit+push to it
-# (skipped when --no-hub-push: we'll only edit faucets.js locally without commit)
-if [[ $NO_HUB_PUSH -eq 0 ]] && [[ -n "$(cd "$HUB_DIR" && git status --porcelain)" ]]; then
-  die "LadyFaucet has uncommitted changes. Commit or stash before running this script (or pass --no-hub-push)."
+# When --push-hub: hub must be clean so the manifest commit lands cleanly
+if [[ $PUSH_HUB -eq 1 ]] && [[ -n "$(cd "$HUB_DIR" && git status --porcelain)" ]]; then
+  die "LadyFaucet has uncommitted changes. Commit or stash before running with --push-hub."
 fi
 
 # Format drip with commas if numeric and >= 1000
@@ -199,12 +202,13 @@ with open(path, 'w') as f:
 PY
 
 cd "$HUB_DIR"
-if [[ $NO_HUB_PUSH -eq 1 ]]; then
-  echo "    --no-hub-push: manifest edited locally; commit+push skipped"
-else
+if [[ $PUSH_HUB -eq 1 ]]; then
   git add src/faucets.js
   git commit -m "Add ${TICKER} to faucets hub" >/dev/null
   git push >/dev/null 2>&1
+  echo "    hub manifest committed + pushed (--push-hub)"
+else
+  echo "    hub manifest edited LOCALLY only (not committed)"
 fi
 
 # ─── 7. Done — print manual steps ──────────────────────────────────────
