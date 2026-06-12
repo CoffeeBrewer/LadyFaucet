@@ -91,4 +91,13 @@ export const faucets = [
     accent: "#facc15",
     accent2: "#18181b",
   },
+  {
+    slug: "cbm",
+    ticker: "CBM",
+    name: "Cheese Burger Money",
+    drip: "100",
+    url: "https://cbm.ladyfaucet.online",
+    accent: "#ef4444",
+    accent2: "#facc15",
+  },
 ];
