@@ -64,6 +64,11 @@ export default function Faucet() {
       <div className="bg-orb orb-2" />
 
       <main className="container">
+        <div className="offline-banner">
+          <b>Faucets temporarily offline</b> — we&apos;ve paused all claims
+          while we address abuse. Back online soon.
+        </div>
+
         <header className="header">
           <div className="badge">Faucet</div>
           <h1>LadyChain Faucet</h1>
@@ -94,19 +99,8 @@ export default function Faucet() {
             One claim per address. Faucet sends native LADY on LadyChain (chainId 589).
           </p>
 
-          <button
-            className="btn"
-            onClick={requestTokens}
-            disabled={status === "loading"}
-          >
-            {status === "loading" ? (
-              <>
-                <span className="spinner" />
-                Sending…
-              </>
-            ) : (
-              "Request 0.1 LADY"
-            )}
+          <button className="btn" disabled title="Faucet temporarily offline">
+            Temporarily offline
           </button>
 
           <div className="info">
@@ -150,7 +144,7 @@ export default function Faucet() {
           )}
         </section>
 
-        <FaucetGrid address={address} />
+        <FaucetGrid />
 
         <footer className="footer">
           Powered by LadyChain • chainId 589

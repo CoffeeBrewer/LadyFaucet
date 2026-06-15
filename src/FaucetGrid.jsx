@@ -11,17 +11,14 @@ function shuffle(arr) {
   return out;
 }
 
-export default function FaucetGrid({ address }) {
+export default function FaucetGrid() {
   const ordered = useMemo(() => shuffle(faucets), []);
   return (
     <section className="grid-section">
       <h2 className="grid-title">Project faucets on LadyChain</h2>
-      <p className="grid-sub">
-        Use the address field above and claim from any faucet in one click.
-      </p>
       <div className="grid">
         {ordered.map((f) => (
-          <FaucetRow key={f.slug} faucet={f} address={address} />
+          <FaucetRow key={f.slug} faucet={f} />
         ))}
       </div>
     </section>

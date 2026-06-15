@@ -242,3 +242,25 @@ body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-se
   color: var(--muted);
   margin: -8px 0 16px;
 }
+.offline-banner{
+  margin: 0 0 8px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(255, 107, 107, 0.10);
+  border: 1px solid rgba(255, 107, 107, 0.45);
+  color: #ffd0d0;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+.offline-banner b{ color: #ff9b9b; }
+.mini-card-disabled{
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+.mini-card-disabled:hover{
+  transform: none;
+  border-color: var(--card-border);
+  box-shadow: none;
+}
+.mini-card-disabled:hover::before{ opacity: 0; }
