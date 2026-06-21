@@ -3,8 +3,8 @@
   --bg:        #0d0710;
   --bg-2:      #1a0820;
   --bg-3:      #211029;
-  --surface:   #1c0c22;
-  --surface-2: #2a1331;
+  --surface:   #2a1338;     /* lighter — clearly distinct from --bg */
+  --surface-2: #3a1a4a;     /* hover/elevated */
 
   --pink:      #e8459e;   /* SINGLE primary accent */
   --pink-hi:   #ff5cad;
@@ -14,9 +14,9 @@
 
   --text:      #fde8ed;
   --text-strong: #ffffff;
-  --muted:     #a07c92;
-  --border:    rgba(232,69,158,0.16);
-  --border-strong: rgba(232,69,158,0.35);
+  --muted:     #c0a3b4;
+  --border:    rgba(232,69,158,0.32);  /* stronger by default */
+  --border-strong: rgba(232,69,158,0.55);
 
   --good:      #4ade80;
   --bad:       #ff6b6b;
@@ -58,7 +58,7 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 /* === Petition (address input — clean) === */
 .petition {
   position: sticky; top: 12px; z-index: 10;
-  background: rgba(28,12,34,0.94);
+  background: rgba(42,19,56,0.94);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
@@ -208,12 +208,14 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   border-radius: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
-  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  box-shadow: 0 4px 14px -8px rgba(0,0,0,0.6);
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 .offering:hover {
+  background: var(--surface-2);
   border-color: var(--pink);
   transform: translateY(-1px);
-  box-shadow: 0 10px 26px -14px rgba(232,69,158,0.35);
+  box-shadow: 0 10px 26px -14px rgba(232,69,158,0.5);
 }
 
 .offering-sigil {
