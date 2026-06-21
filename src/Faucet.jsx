@@ -64,7 +64,7 @@ export default function Faucet() {
             <div className="lady-hero-body">
               <div className="lady-hero-eyebrow">Native · Chain 589</div>
               <div className="lady-hero-title">$LADY</div>
-              <div className="lady-hero-meta">LadyChain native token · 0.1 LADY per claim</div>
+              <div className="lady-hero-meta">LadyChain's native gas &amp; reward token</div>
             </div>
             <div className="lady-hero-action">
               <TokenRow token={lady} address={address} layout="hero" />

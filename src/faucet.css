@@ -275,40 +275,44 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   min-width: 0;
 }
 .offering-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-strong);
   letter-spacing: 0.1px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-bottom: 4px;
 }
-.offering-sub {
-  display: flex; align-items: center; gap: 10px;
-  flex-wrap: wrap;
-}
-.offering-drip-inline {
+.offering-ticker {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: var(--gold);
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: 6px;
+  letter-spacing: 0.5px;
 }
 .offering-socials {
   display: inline-flex; align-items: center; gap: 4px;
 }
 .social-link {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 6px;
   background: rgba(232,69,158,0.08);
   border: 1px solid var(--border);
   color: var(--muted);
-  font-size: 11px;
   text-decoration: none;
-  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease, transform 100ms ease;
+}
+.social-link svg {
+  width: 13px; height: 13px;
+  display: block;
 }
 .social-link:hover {
   background: rgba(232,69,158,0.22);
   color: var(--pink-hi);
   border-color: var(--pink);
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
 .offering-action {
