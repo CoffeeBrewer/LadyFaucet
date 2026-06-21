@@ -1,5 +1,15 @@
 export const faucets = [
   {
+    slug: "lady",
+    ticker: "LADY",
+    name: "LadyChain",
+    drip: "0.1",
+    url: "https://ladyfaucet.online",
+    native: true,
+    accent: "#e8459e",
+    accent2: "#3d1240",
+  },
+  {
     slug: "sloth",
     ticker: "SLOTH",
     name: "Sloth Syndicate",
