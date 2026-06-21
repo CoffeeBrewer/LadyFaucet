@@ -23,9 +23,17 @@ export default function Faucet() {
     <div className="altar">
       <div className="cosmos" />
 
+      <header className="altar-intro">
+        <h1 className="altar-mark">LadyChain Faucet</h1>
+        <p className="altar-tagline">
+          Enter your EVM address below — then claim native $LADY and any
+          project token in one click.
+        </p>
+      </header>
+
       <section className="petition">
         <label className="petition-label" htmlFor="addr">
-          Your address
+          1 · Your address
         </label>
         <div className="petition-input">
           <input

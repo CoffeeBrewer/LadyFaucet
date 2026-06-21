@@ -40,9 +40,34 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   position: relative;
   max-width: 640px;
   margin: 0 auto;
-  padding: 20px 18px 80px;
+  padding: 36px 18px 80px;
   min-height: 100vh;
   z-index: 1;
+}
+
+/* === Intro (above the address bar) === */
+.altar-intro {
+  position: relative; z-index: 1;
+  text-align: center;
+  margin-bottom: 22px;
+  padding: 0 8px;
+}
+.altar-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(28px, 5.5vw, 36px);
+  line-height: 1.1;
+  color: var(--text-strong);
+  letter-spacing: 0.3px;
+  margin-bottom: 10px;
+}
+.altar-tagline {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 460px;
+  margin: 0 auto;
 }
 
 /* === Subtle cosmic background (toned way down) === */
@@ -122,6 +147,8 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   margin-bottom: 32px;
 }
 .lady-hero-frame {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-template-areas:
@@ -176,6 +203,7 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 
 /* === Section header (instead of decorative divider) === */
 .section-head {
+  position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 14px;
   padding: 0 4px;
@@ -199,6 +227,8 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   gap: 10px;
 }
 .offering {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 44px 1fr auto;
   grid-template-areas: "icon meta act";
