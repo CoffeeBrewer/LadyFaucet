@@ -94,15 +94,12 @@ export default function TokenRow({ token, address, layout }) {
           {btnLabel()}
         </button>
         {status === "success" && txHash && (
-          <div className="hero-receipt">
-            The Lady has blessed you ·{" "}
-            <a href={`https://ladyscan.us/tx/${txHash}`} target="_blank" rel="noreferrer">
-              view tx
-            </a>
-          </div>
+          <a href={`https://ladyscan.us/tx/${txHash}`} target="_blank" rel="noreferrer" className="hero-status-link">
+            view tx →
+          </a>
         )}
         {status === "error" && (
-          <div className="hero-receipt err">{message}</div>
+          <div className="hero-status-err">{message}</div>
         )}
       </>
     );
@@ -124,10 +121,8 @@ export default function TokenRow({ token, address, layout }) {
       </div>
 
       <div className="offering-meta">
-        <div className="offering-name">
-          {token.name}
-          <span className="offering-ticker">· {token.ticker}</span>
-        </div>
+        <span className="offering-name">{token.name}</span>
+        <span className="offering-ticker">· {token.ticker}</span>
         <Socials token={token} />
       </div>
 
@@ -140,19 +135,15 @@ export default function TokenRow({ token, address, layout }) {
         >
           {btnLabel()}
         </button>
-      </div>
-
-      {status === "success" && txHash && (
-        <div className="offering-receipt">
-          The Lady has blessed you ·{" "}
-          <a href={`https://ladyscan.us/tx/${txHash}`} target="_blank" rel="noreferrer">
-            view tx
+        {status === "success" && txHash && (
+          <a href={`https://ladyscan.us/tx/${txHash}`} target="_blank" rel="noreferrer" className="action-status-link">
+            view tx →
           </a>
-        </div>
-      )}
-      {status === "error" && (
-        <div className="offering-receipt err">{message}</div>
-      )}
+        )}
+        {status === "error" && (
+          <span className="action-status-err">{message}</span>
+        )}
+      </div>
     </div>
   );
 }

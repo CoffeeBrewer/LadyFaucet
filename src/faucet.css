@@ -120,7 +120,7 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   color: var(--text-strong);
   padding: 12px 14px;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 14px;
+  font-size: 13px;
 }
 .addr-field::placeholder { color: var(--muted); }
 .addr-invalid { color: var(--bad); }
@@ -194,7 +194,8 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 }
 .lady-hero-meta {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text);
+  opacity: 0.85;
   margin-top: 2px;
 }
 .lady-hero-action {
@@ -209,16 +210,20 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   padding: 0 4px;
 }
 .section-title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--text);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 .section-count {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--pink);
+  background: rgba(232,69,158,0.10);
+  border: 1px solid var(--border);
+  padding: 3px 9px;
+  border-radius: 999px;
 }
 
 /* === Offerings list === */
@@ -271,7 +276,8 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 
 .offering-meta {
   grid-area: meta;
-  display: flex; flex-direction: column; gap: 2px;
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 8px 10px;
   min-width: 0;
 }
 .offering-name {
@@ -280,15 +286,14 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   color: var(--text-strong);
   letter-spacing: 0.1px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  margin-bottom: 4px;
 }
 .offering-ticker {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
   font-weight: 500;
-  margin-left: 6px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 .offering-socials {
   display: inline-flex; align-items: center; gap: 4px;
@@ -317,6 +322,21 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 
 .offering-action {
   grid-area: act;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+}
+.action-status-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--good);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+.action-status-link:hover { color: var(--pink-hi); text-decoration: underline; }
+.action-status-err {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--bad);
+  max-width: 180px; text-align: right;
 }
 
 /* === Buttons — SINGLE pink style, high contrast === */
@@ -371,52 +391,23 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Success / error receipt (only here keep the mystic copy) */
-.offering-receipt {
-  grid-column: 1 / -1;
-  margin-top: 8px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  background: rgba(74,222,128,0.08);
-  border: 1px solid rgba(74,222,128,0.30);
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 13px;
-  color: var(--good);
-  letter-spacing: 0.2px;
-}
-.offering-receipt.err {
-  background: rgba(255,107,107,0.08);
-  border-color: rgba(255,107,107,0.30);
-  color: var(--bad);
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-size: 12px;
-}
-.offering-receipt a {
-  color: inherit; text-decoration: underline;
-  font-style: normal; font-family: 'JetBrains Mono', monospace; font-size: 11px;
-}
+/* (Old full-width receipt block removed — status is now inline near the button) */
 
-.hero-receipt {
-  margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(74,222,128,0.10);
-  border: 1px solid rgba(74,222,128,0.30);
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 14px;
+.hero-status-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
   color: var(--good);
+  text-decoration: none;
+  letter-spacing: 0.5px;
 }
-.hero-receipt.err {
-  background: rgba(255,107,107,0.08);
-  border-color: rgba(255,107,107,0.30);
+.hero-status-link:hover { color: var(--pink-hi); text-decoration: underline; }
+.hero-status-err {
+  margin-top: 8px;
+  font-size: 12px;
   color: var(--bad);
-  font-family: 'Inter', sans-serif;
-  font-style: normal; font-size: 13px;
 }
-.hero-receipt a { color: inherit; text-decoration: underline; }
 
 /* === Footer === */
 .altar-foot {
