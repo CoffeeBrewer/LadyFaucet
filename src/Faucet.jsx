@@ -21,16 +21,11 @@ export default function Faucet() {
 
   return (
     <div className="altar">
-      <div className="cosmos">
-        <div className="orb orb-pink" />
-        <div className="orb orb-purple" />
-        <div className="orb orb-teal" />
-        <div className="starfield" />
-      </div>
+      <div className="cosmos" />
 
       <section className="petition">
         <label className="petition-label" htmlFor="addr">
-          Bless this address with…
+          Your address
         </label>
         <div className="petition-input">
           <input
@@ -44,12 +39,9 @@ export default function Faucet() {
             spellCheck="false"
           />
           <span className={`petition-status ${isValid ? "ok" : ""}`}>
-            {address ? (isValid ? "✓ valid" : "✗ invalid") : "EVM"}
+            {address ? (isValid ? "valid" : "invalid") : "EVM"}
           </span>
         </div>
-        <p className="petition-hint">
-          One blessing per address, per offering.
-        </p>
       </section>
 
       {lady && (
@@ -62,12 +54,9 @@ export default function Faucet() {
               onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
             <div className="lady-hero-body">
-              <div className="lady-hero-eyebrow">Native to LadyChain</div>
-              <h1 className="lady-hero-title">$LADY</h1>
-              <div className="lady-hero-drip">
-                <span className="lady-hero-amount">0.1</span>
-                <span className="lady-hero-unit">LADY</span>
-              </div>
+              <div className="lady-hero-eyebrow">Native · Chain 589</div>
+              <div className="lady-hero-title">$LADY</div>
+              <div className="lady-hero-meta">LadyChain native token · 0.1 LADY per claim</div>
             </div>
             <div className="lady-hero-action">
               <TokenRow token={lady} address={address} layout="hero" />
@@ -76,10 +65,9 @@ export default function Faucet() {
         </section>
       )}
 
-      <div className="offering-divider">
-        <span className="divider-line" />
-        <span className="divider-mark">Project offerings</span>
-        <span className="divider-line" />
+      <div className="section-head">
+        <span className="section-title">Project tokens</span>
+        <span className="section-count">{project.length} faucets</span>
       </div>
 
       <section className="offerings">
@@ -89,9 +77,7 @@ export default function Faucet() {
       </section>
 
       <footer className="altar-foot">
-        <span>⚜</span>
-        <span>Powered by LadyChain · Chain 589</span>
-        <span>⚜</span>
+        Powered by <a href="https://ladyscan.us" target="_blank" rel="noreferrer">LadyChain</a> · Chain 589
       </footer>
     </div>
   );
