@@ -1,10 +1,8 @@
 import { useState, useMemo } from "react";
 import { faucets } from "./faucets";
-import StatsBar from "./StatsBar";
 import TokenRow from "./TokenRow";
 import "./faucet.css";
 
-// Fisher-Yates shuffle for the project tokens (LADY stays at the top)
 function shuffle(arr) {
   const out = [...arr];
   for (let i = out.length - 1; i > 0; i--) {
@@ -18,12 +16,8 @@ export default function Faucet() {
   const [address, setAddress] = useState("");
   const isValid = /^0x[a-fA-F0-9]{40}$/.test(address.trim());
 
-  // LADY always first, the rest shuffled per page load
-  const ordered = useMemo(() => {
-    const lady    = faucets.find((f) => f.native);
-    const rest    = faucets.filter((f) => !f.native);
-    return lady ? [lady, ...shuffle(rest)] : shuffle(faucets);
-  }, []);
+  const lady    = faucets.find((f) => f.native);
+  const project = useMemo(() => shuffle(faucets.filter((f) => !f.native)), []);
 
   return (
     <div className="altar">
@@ -33,19 +27,6 @@ export default function Faucet() {
         <div className="orb orb-teal" />
         <div className="starfield" />
       </div>
-
-      <header className="altar-head">
-        <StatsBar />
-
-        <div className="altar-crest" aria-hidden="true">
-          <span className="crest-flourish left">❦</span>
-          <span className="crest-symbol">⚜</span>
-          <span className="crest-flourish right">❦</span>
-        </div>
-
-        <h1 className="altar-title">$LADY</h1>
-        <p className="altar-sub">The Altar of LadyChain</p>
-      </header>
 
       <section className="petition">
         <label className="petition-label" htmlFor="addr">
@@ -71,14 +52,38 @@ export default function Faucet() {
         </p>
       </section>
 
+      {lady && (
+        <section className="lady-hero">
+          <div className="lady-hero-frame">
+            <img
+              src="/icons/LADY.png"
+              alt="$LADY"
+              className="lady-hero-icon"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+            <div className="lady-hero-body">
+              <div className="lady-hero-eyebrow">Native to LadyChain</div>
+              <h1 className="lady-hero-title">$LADY</h1>
+              <div className="lady-hero-drip">
+                <span className="lady-hero-amount">0.1</span>
+                <span className="lady-hero-unit">LADY</span>
+              </div>
+            </div>
+            <div className="lady-hero-action">
+              <TokenRow token={lady} address={address} layout="hero" />
+            </div>
+          </div>
+        </section>
+      )}
+
       <div className="offering-divider">
         <span className="divider-line" />
-        <span className="divider-mark">The Lady's Offerings</span>
+        <span className="divider-mark">Project offerings</span>
         <span className="divider-line" />
       </div>
 
       <section className="offerings">
-        {ordered.map((t) => (
+        {project.map((t) => (
           <TokenRow key={t.slug} token={t} address={address} />
         ))}
       </section>
