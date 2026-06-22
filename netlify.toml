@@ -3,6 +3,13 @@
   publish = "dist"
   command = "npm run build"
 
+[build.environment]
+  # CHAIN_ID, FAUCET_ADDRESS, RPC_URL are public (chain 589, funding wallet,
+  # public RPC) and appear in the frontend bundle on purpose. FAUCET_PK is
+  # never bundled — only read server-side by netlify/functions/faucet.js —
+  # so it stays under the secrets scanner.
+  SECRETS_SCAN_OMIT_KEYS = "CHAIN_ID,FAUCET_ADDRESS,RPC_URL"
+
 [dev]
   functions = "netlify/functions"
   command = "npm run dev"
