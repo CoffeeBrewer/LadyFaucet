@@ -49,25 +49,17 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 .altar-intro {
   position: relative; z-index: 1;
   text-align: center;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   padding: 0 8px;
 }
 .altar-mark {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 700;
   font-style: italic;
-  font-size: clamp(28px, 5.5vw, 36px);
+  font-size: clamp(26px, 5vw, 32px);
   line-height: 1.1;
   color: var(--text-strong);
   letter-spacing: 0.3px;
-  margin-bottom: 10px;
-}
-.altar-tagline {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--muted);
-  max-width: 460px;
-  margin: 0 auto;
 }
 
 /* === Subtle cosmic background (toned way down) === */
@@ -80,37 +72,27 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 }
 .orb, .starfield { display: none; }  /* killed — too noisy */
 
-/* === Petition (address input — clean) === */
-.petition {
-  position: sticky; top: 12px; z-index: 10;
-  background: rgba(42,19,56,0.94);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 24px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 16px 32px -16px rgba(0,0,0,0.6);
+/* === Address input (inside the hero) === */
+.hero-address {
+  grid-area: addr;
+  display: flex; flex-direction: column; gap: 8px;
 }
-.petition-label {
-  display: block;
-  font-size: 11px;
+.hero-address-label {
+  font-size: 12px;
   font-weight: 600;
   color: var(--muted);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  padding: 0 4px;
+  padding: 0 2px;
 }
-.petition-input {
+.hero-address-input {
   position: relative;
   display: flex; align-items: stretch;
   border-radius: 10px;
-  background: var(--bg);
+  background: rgba(13,7,16,0.55);
   border: 1px solid var(--border);
   overflow: hidden;
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
-.petition-input:focus-within {
+.hero-address-input:focus-within {
   border-color: var(--pink);
   box-shadow: 0 0 0 3px rgba(232,69,158,0.18);
 }
@@ -140,9 +122,7 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   color: var(--good);
   background: rgba(74,222,128,0.10);
 }
-.petition-hint { display: none; }
-
-/* === LADY HERO — clean prominent native card === */
+/* === LADY HERO — unified card: branding + address + claim === */
 .lady-hero {
   margin-bottom: 32px;
 }
@@ -153,12 +133,13 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   grid-template-columns: 80px 1fr;
   grid-template-areas:
     "icon body"
+    "addr addr"
     "act  act";
   gap: 16px 18px;
   padding: 22px;
   border-radius: 18px;
   background:
-    linear-gradient(135deg, rgba(232,69,158,0.16), rgba(63,184,180,0.06) 70%),
+    linear-gradient(135deg, rgba(232,69,158,0.28), rgba(63,184,180,0.10) 70%),
     var(--surface);
   border: 1px solid var(--border-strong);
   box-shadow: 0 20px 50px -25px rgba(232,69,158,0.35);
@@ -168,8 +149,9 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   width: 80px; height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--border-strong);
+  border: 2px solid var(--gold);
   background: var(--bg-2);
+  box-shadow: 0 0 18px rgba(212,160,23,0.25);
 }
 .lady-hero-body {
   grid-area: body;
@@ -210,11 +192,10 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   padding: 0 4px;
 }
 .section-title {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--text);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  letter-spacing: 0.1px;
 }
 .section-count {
   font-family: 'JetBrains Mono', monospace;
@@ -276,9 +257,13 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 
 .offering-meta {
   grid-area: meta;
-  display: flex; align-items: center; flex-wrap: wrap;
-  gap: 8px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
   min-width: 0;
+}
+.meta-text {
+  display: inline-flex; align-items: baseline; gap: 6px;
+  min-width: 0; flex: 1;
 }
 .offering-name {
   font-size: 15px;
@@ -294,6 +279,7 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   opacity: 0.7;
   font-weight: 500;
   letter-spacing: 0.4px;
+  flex-shrink: 0;
 }
 .offering-socials {
   display: inline-flex; align-items: center; gap: 4px;
@@ -342,7 +328,7 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 /* === Buttons — SINGLE pink style, high contrast === */
 .receive-btn {
   padding: 10px 16px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid transparent;
   background: var(--pink);
   color: var(--text-strong);
@@ -382,6 +368,16 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
   color: var(--bad);
   border-color: rgba(255,107,107,0.35);
 }
+.receive-btn.empty {
+  background: rgba(160,124,146,0.08);
+  color: var(--muted);
+  border-color: rgba(160,124,146,0.20);
+  cursor: not-allowed;
+}
+
+/* Dim the row when empty so the eye skips past it */
+.offering-empty { opacity: 0.70; }
+.offering-empty:hover { opacity: 0.92; border-color: var(--border); transform: none; box-shadow: 0 4px 14px -8px rgba(0,0,0,0.6); }
 
 .rune-spin {
   width: 12px; height: 12px; border-radius: 50%;
@@ -422,7 +418,6 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 /* === Mobile === */
 @media (max-width: 540px) {
   .altar { padding: 14px 14px 60px; max-width: 100%; }
-  .petition { padding: 10px; border-radius: 12px; }
   .addr-field { font-size: 13px; padding: 11px 12px; }
   .petition-status { font-size: 9px; padding: 4px 8px; }
 

@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { faucets } from "./faucets";
+import { useBalances } from "./useBalances";
 import TokenRow from "./TokenRow";
 import "./faucet.css";
 
@@ -19,38 +20,15 @@ export default function Faucet() {
   const lady    = faucets.find((f) => f.native);
   const project = useMemo(() => shuffle(faucets.filter((f) => !f.native)), []);
 
+  const availability = useBalances(faucets);
+
   return (
     <div className="altar">
       <div className="cosmos" />
 
       <header className="altar-intro">
         <h1 className="altar-mark">LadyChain Faucet</h1>
-        <p className="altar-tagline">
-          Enter your EVM address below — then claim native $LADY and any
-          project token in one click.
-        </p>
       </header>
-
-      <section className="petition">
-        <label className="petition-label" htmlFor="addr">
-          1 · Your address
-        </label>
-        <div className="petition-input">
-          <input
-            id="addr"
-            type="text"
-            className={`addr-field ${address && !isValid ? "addr-invalid" : ""}`}
-            placeholder="0x…"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            autoComplete="off"
-            spellCheck="false"
-          />
-          <span className={`petition-status ${isValid ? "ok" : ""}`}>
-            {address ? (isValid ? "valid" : "invalid") : "EVM"}
-          </span>
-        </div>
-      </section>
 
       {lady && (
         <section className="lady-hero">
@@ -62,12 +40,37 @@ export default function Faucet() {
               onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
             <div className="lady-hero-body">
-              <div className="lady-hero-eyebrow">Native · Chain 589</div>
+              <div className="lady-hero-eyebrow">NATIVE · CHAIN 589</div>
               <div className="lady-hero-title">$LADY</div>
               <div className="lady-hero-meta">LadyChain's native gas &amp; reward token</div>
             </div>
+
+            <div className="hero-address">
+              <label className="hero-address-label" htmlFor="addr">Your address</label>
+              <div className="hero-address-input">
+                <input
+                  id="addr"
+                  type="text"
+                  className={`addr-field ${address && !isValid ? "addr-invalid" : ""}`}
+                  placeholder="0x…"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  autoComplete="off"
+                  spellCheck="false"
+                />
+                <span className={`petition-status ${isValid ? "ok" : ""}`}>
+                  {address ? (isValid ? "valid" : "invalid") : "EVM"}
+                </span>
+              </div>
+            </div>
+
             <div className="lady-hero-action">
-              <TokenRow token={lady} address={address} layout="hero" />
+              <TokenRow
+                token={lady}
+                address={address}
+                layout="hero"
+                availability={availability[lady.ticker]}
+              />
             </div>
           </div>
         </section>
@@ -80,7 +83,12 @@ export default function Faucet() {
 
       <section className="offerings">
         {project.map((t) => (
-          <TokenRow key={t.slug} token={t} address={address} />
+          <TokenRow
+            key={t.slug}
+            token={t}
+            address={address}
+            availability={availability[t.ticker]}
+          />
         ))}
       </section>
 

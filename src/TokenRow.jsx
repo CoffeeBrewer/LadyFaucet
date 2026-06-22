@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ICONS = {
   website: (
@@ -47,17 +47,41 @@ function Socials({ token }) {
   );
 }
 
-export default function TokenRow({ token, address, layout }) {
-  const [status, setStatus]   = useState("idle");
-  const [message, setMessage] = useState("");
-  const [txHash, setTxHash]   = useState("");
+function memoryKey(addr, ticker) {
+  return `claim:${addr.toLowerCase()}:${ticker}`;
+}
+
+export default function TokenRow({ token, address, layout, availability }) {
+  const [status, setStatus]     = useState("idle");
+  const [message, setMessage]   = useState("");
+  const [txHash, setTxHash]     = useState("");
   const [iconFailed, setIconFailed] = useState(false);
 
   const isValid = /^0x[a-fA-F0-9]{40}$/.test((address || "").trim());
   const hero    = layout === "hero";
+  const empty   = availability === "empty";
+
+  // Restore prior-claim state from localStorage when the address changes.
+  useEffect(() => {
+    if (!isValid) {
+      setStatus("idle"); setTxHash(""); setMessage("");
+      return;
+    }
+    try {
+      const stored = localStorage.getItem(memoryKey(address.trim(), token.ticker));
+      if (stored) {
+        const { txHash: prevTx } = JSON.parse(stored);
+        setStatus("success");
+        setTxHash(prevTx || "");
+        setMessage("");
+        return;
+      }
+    } catch {}
+    setStatus("idle"); setTxHash(""); setMessage("");
+  }, [address, token.ticker, isValid]);
 
   async function claim() {
-    if (!isValid) return;
+    if (!isValid || empty) return;
     try {
       setStatus("loading"); setMessage(""); setTxHash("");
       const res = await fetch(`/.netlify/functions/faucet`, {
@@ -69,6 +93,12 @@ export default function TokenRow({ token, address, layout }) {
       if (!res.ok || !data?.ok) throw new Error(data?.error || `Failed (${res.status})`);
       setTxHash(data.txHash);
       setStatus("success");
+      try {
+        localStorage.setItem(
+          memoryKey(address.trim(), token.ticker),
+          JSON.stringify({ txHash: data.txHash, ts: Date.now() })
+        );
+      } catch {}
     } catch (e) {
       setStatus("error");
       setMessage(e.message || "Failed");
@@ -76,20 +106,26 @@ export default function TokenRow({ token, address, layout }) {
   }
 
   const btnLabel = () => {
-    if (status === "loading") return (<><span className="rune-spin" /> Claiming…</>);
-    if (status === "success") return "✓ Sent";
-    if (status === "error")   return "Try again";
+    if (empty && status === "idle")  return "Faucet empty";
+    if (status === "loading")        return (<><span className="rune-spin" /> Claiming…</>);
+    if (status === "success")        return "✓ Already claimed";
+    if (status === "error")          return "Try again";
     return `Claim ${token.drip} ${token.ticker}`;
   };
+
+  const btnDisabled =
+    !isValid || empty || status === "loading" || status === "success";
+
+  const btnTitle = !isValid
+    ? "Enter your EVM address above"
+    : empty ? "This faucet is currently out of tokens" : "";
 
   if (hero) {
     return (
       <>
         <button
-          className={`receive-btn hero ${status === "success" ? "success" : ""} ${status === "error" ? "error" : ""}`}
-          onClick={claim}
-          disabled={!isValid || status === "loading" || status === "success"}
-          title={!isValid ? "Enter your EVM address above" : ""}
+          className={`receive-btn hero ${status === "success" ? "success" : ""} ${status === "error" ? "error" : ""} ${empty ? "empty" : ""}`}
+          onClick={claim} disabled={btnDisabled} title={btnTitle}
         >
           {btnLabel()}
         </button>
@@ -106,7 +142,7 @@ export default function TokenRow({ token, address, layout }) {
   }
 
   return (
-    <div className="offering">
+    <div className={`offering ${empty ? "offering-empty" : ""}`}>
       <div className="offering-sigil">
         {!iconFailed ? (
           <img
@@ -121,17 +157,17 @@ export default function TokenRow({ token, address, layout }) {
       </div>
 
       <div className="offering-meta">
-        <span className="offering-name">{token.name}</span>
-        <span className="offering-ticker">· {token.ticker}</span>
+        <span className="meta-text">
+          <span className="offering-name">{token.name}</span>
+          <span className="offering-ticker">· {token.ticker}</span>
+        </span>
         <Socials token={token} />
       </div>
 
       <div className="offering-action">
         <button
-          className={`receive-btn ${status === "success" ? "success" : ""} ${status === "error" ? "error" : ""}`}
-          onClick={claim}
-          disabled={!isValid || status === "loading" || status === "success"}
-          title={!isValid ? "Enter your EVM address above" : ""}
+          className={`receive-btn ${status === "success" ? "success" : ""} ${status === "error" ? "error" : ""} ${empty ? "empty" : ""}`}
+          onClick={claim} disabled={btnDisabled} title={btnTitle}
         >
           {btnLabel()}
         </button>
