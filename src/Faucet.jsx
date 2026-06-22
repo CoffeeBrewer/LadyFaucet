@@ -18,9 +18,18 @@ export default function Faucet() {
   const isValid = /^0x[a-fA-F0-9]{40}$/.test(address.trim());
 
   const lady    = faucets.find((f) => f.native);
-  const project = useMemo(() => shuffle(faucets.filter((f) => !f.native)), []);
+  const shuffled = useMemo(() => shuffle(faucets.filter((f) => !f.native)), []);
 
   const availability = useBalances(faucets);
+
+  // Non-empty rows first (live + still-checking), empty rows at the bottom.
+  // Each group keeps the shuffled order so position doesn't reshuffle on
+  // every availability poll.
+  const project = useMemo(() => {
+    const live  = shuffled.filter((t) => availability[t.ticker] !== "empty");
+    const empty = shuffled.filter((t) => availability[t.ticker] === "empty");
+    return [...live, ...empty];
+  }, [shuffled, availability]);
 
   return (
     <div className="altar">
