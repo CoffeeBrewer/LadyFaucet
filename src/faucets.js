@@ -33,7 +33,7 @@ export const faucets = [
     twitter: "https://x.com/booxrpl?s=11" },
   { slug: "bullishclick", ticker: "BC", name: "Bullish Click",       drip: "0.71",
     contract: "0x068cb875c560b2f96bbb55b9ca87739943b576a7", decimals:  9 },
-  { slug: "lmax",    ticker: "LMAX",    name: "Ladyus Maximus",      drip: "250",
+  { slug: "lmax",    ticker: "LMAX",    name: "Ladyus Maximus",      drip: "50",
     contract: "0x863749bbd57a2e675208d88c243fb63730428d64", decimals: 18,
     telegram: "https://t.me/+XBadV0smnlphMDA0" },
   { slug: "cafe",    ticker: "CAFE",    name: "CAFE DOLLARS",        drip: "50,000,000",
