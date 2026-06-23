@@ -12,7 +12,7 @@ export const TOKENS = {
   BC:      { contract: "0x068cb875c560b2f96bbb55b9ca87739943b576a7", decimals:  9, drip: "0.71" },
   LMAX:    { contract: "0x863749bbd57a2e675208d88c243fb63730428d64", decimals: 18, drip: "50" },
   CAFE:    { contract: "0x9acced798339ad12e58e5dc41989102a19db325c", decimals: 18, drip: "50000000" },
-  L589:    { contract: "0x95a1219c5d0f4e81babe07f101f84d013b06a6b8", decimals: 18, drip: "100" },
+  L589:    { contract: "0x95a1219c5d0f4e81babe07f101f84d013b06a6b8", decimals: 18, drip: "50" },
   GIGA:    { contract: "0x932083ceab6f0a40e89d0ff753e45f033a783faa", decimals: 18, drip: "10" },
   CBM:     { contract: "0x7c4c48dc349ce192f96f62244dbc42ffaf116ce7", decimals: 18, drip: "100" },
 };

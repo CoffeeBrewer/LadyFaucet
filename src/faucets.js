@@ -38,7 +38,7 @@ export const faucets = [
     telegram: "https://t.me/+XBadV0smnlphMDA0" },
   { slug: "cafe",    ticker: "CAFE",    name: "CAFE DOLLARS",        drip: "50,000,000",
     contract: "0x9acced798339ad12e58e5dc41989102a19db325c", decimals: 18 },
-  { slug: "l589",    ticker: "L589",    name: "Lady589",             drip: "100",
+  { slug: "l589",    ticker: "L589",    name: "Lady589",             drip: "50",
     contract: "0x95a1219c5d0f4e81babe07f101f84d013b06a6b8", decimals: 18,
     telegram: "https://t.me/+2bfm7fjD0Eo4NWQ8" },
   { slug: "giga",    ticker: "GIGA",    name: "GIGACHAD",            drip: "10",
