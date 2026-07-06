@@ -39,6 +39,11 @@ export default function Faucet() {
         <h1 className="altar-mark">LadyChain Faucet</h1>
       </header>
 
+      <div className="offline-banner">
+        <b>Faucets under maintenance</b> — claims are temporarily paused.
+        Back online soon.
+      </div>
+
       {lady && (
         <section className="lady-hero">
           <div className="lady-hero-frame">

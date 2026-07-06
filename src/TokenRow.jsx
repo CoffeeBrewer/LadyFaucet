@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+// Temporary global pause switch — every faucet is offline until this flips
+// back to false. Keeps the banner + row buttons in sync from one place.
+const PAUSED = true;
+
 const ICONS = {
   website: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
@@ -81,7 +85,7 @@ export default function TokenRow({ token, address, layout, availability }) {
   }, [address, token.ticker, isValid]);
 
   async function claim() {
-    if (!isValid || empty) return;
+    if (PAUSED || !isValid || empty) return;
     try {
       setStatus("loading"); setMessage(""); setTxHash("");
       const res = await fetch(`/.netlify/functions/faucet`, {
@@ -106,6 +110,7 @@ export default function TokenRow({ token, address, layout, availability }) {
   }
 
   const btnLabel = () => {
+    if (PAUSED)                       return "Temporarily offline";
     if (empty && status === "idle")  return "Faucet empty";
     if (status === "loading")        return (<><span className="rune-spin" /> Claiming…</>);
     if (status === "success")        return "✓ Already claimed";
@@ -114,9 +119,11 @@ export default function TokenRow({ token, address, layout, availability }) {
   };
 
   const btnDisabled =
-    !isValid || empty || status === "loading" || status === "success";
+    PAUSED || !isValid || empty || status === "loading" || status === "success";
 
-  const btnTitle = !isValid
+  const btnTitle = PAUSED
+    ? "Faucets are temporarily offline for maintenance"
+    : !isValid
     ? "Enter your EVM address above"
     : empty ? "This faucet is currently out of tokens" : "";
 
