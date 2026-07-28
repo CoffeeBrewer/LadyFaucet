@@ -394,6 +394,11 @@ a:hover { color: var(--pink-hi); text-decoration: underline; }
 .offering-empty { opacity: 0.70; }
 .offering-empty:hover { opacity: 0.92; border-color: var(--border); transform: none; box-shadow: 0 4px 14px -8px rgba(0,0,0,0.6); }
 
+/* Muted state for paused project faucets — desaturated + no hover lift so
+   they read as inactive while claims are offline. */
+.offering-paused { opacity: 0.5; filter: grayscale(0.55); }
+.offering-paused:hover { opacity: 0.55; border-color: var(--border); transform: none; box-shadow: 0 4px 14px -8px rgba(0,0,0,0.6); }
+
 .rune-spin {
   width: 12px; height: 12px; border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.25);

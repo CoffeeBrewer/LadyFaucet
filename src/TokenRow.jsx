@@ -148,7 +148,7 @@ export default function TokenRow({ token, address, layout, availability }) {
   }
 
   return (
-    <div className={`offering ${empty ? "offering-empty" : ""}`}>
+    <div className={`offering ${PAUSED ? "offering-paused" : ""} ${empty ? "offering-empty" : ""}`}>
       <div className="offering-sigil">
         {!iconFailed ? (
           <img
