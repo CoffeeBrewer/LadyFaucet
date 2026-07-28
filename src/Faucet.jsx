@@ -39,11 +39,6 @@ export default function Faucet() {
         <h1 className="altar-mark">LadyChain Faucet</h1>
       </header>
 
-      <div className="offline-banner">
-        <b>Faucets under maintenance</b> — claims are temporarily paused.
-        Back online soon.
-      </div>
-
       {lady && (
         <section className="lady-hero">
           <div className="lady-hero-frame">
@@ -93,6 +88,11 @@ export default function Faucet() {
       <div className="section-head">
         <span className="section-title">Project tokens</span>
         <span className="section-count">{project.length} faucets</span>
+      </div>
+
+      <div className="offline-banner">
+        <b>Project-token faucets are paused</b> for maintenance — the $LADY
+        faucet above is live. Project claims back online soon.
       </div>
 
       <section className="offerings">

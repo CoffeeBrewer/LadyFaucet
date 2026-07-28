@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
 
-// Temporary global pause switch — every faucet is offline until this flips
-// back to false. Keeps the banner + row buttons in sync from one place.
-const PAUSED = true;
-
 const ICONS = {
   website: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
@@ -64,6 +60,9 @@ export default function TokenRow({ token, address, layout, availability }) {
   const isValid = /^0x[a-fA-F0-9]{40}$/.test((address || "").trim());
   const hero    = layout === "hero";
   const empty   = availability === "empty";
+
+  // Native $LADY is live; project-token faucets stay paused for maintenance.
+  const PAUSED  = !token.native;
 
   // Restore prior-claim state from localStorage when the address changes.
   useEffect(() => {
