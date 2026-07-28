@@ -79,13 +79,16 @@ export default async (req) => {
     const ipLimits = getStore("hub-ip");
     const lockKey  = `claimed:${tokenKey}:${addr}`;
 
-    // ATOMIC per-address-per-token lock — fixes TOCTOU race that allowed
-    // parallel double-claims of the same token.
-    try {
-      await claims.setJSON(lockKey, { ts: Date.now() }, { onlyIfNone: true });
-    } catch {
+    // Per-address-per-token dedup. @netlify/blobs v8 has NO conditional write
+    // (the old { onlyIfNone: true } was silently ignored, so this never
+    // actually blocked repeat claims). Check-then-set instead, writing the
+    // lock before we send the tx. Not fully atomic against two truly-parallel
+    // requests for the same address, but the per-IP limit below backstops
+    // that; sequential re-claims are now blocked as intended.
+    if (await claims.get(lockKey)) {
       return reply(429, { ok: false, error: `Already claimed ${tokenKey}` });
     }
+    await claims.setJSON(lockKey, { ts: Date.now() });
     const releaseLock = () => claims.delete(lockKey).catch(() => {});
 
     // IP rate limit (per token)
